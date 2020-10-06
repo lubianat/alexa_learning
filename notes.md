@@ -34,3 +34,178 @@ I need accounts, okay, got it.
 I`ll create a subdir for the hello world and:
 
 - Create an empty hello_world.py file
+
+It goes on explaing that I can use _classes_ or _decorators_ for the skill, but I rhould choose one style and stick to it. 
+
+I still do not have a favorite, so I`ll test both
+
+### Option 1: Implementation using handler classes
+
+Add some code to `hello_world.py`:
+
+```
+from ask_sdk_core.skill_builder import SkillBuilder
+
+sb = SkillBuilder()
+
+```
+
+Two methods:
+
+-`can_handle` : Checks if class is going go reply to tne user
+-`handle` : Actually provides the speech output
+
+
+Building upon it, first import libs:
+
+```
+from ask_sdk_core.dispatch_components import AbstractRequestHandler
+from ask_sdk_core.utils import is_request_type, is_intent_name
+from ask_sdk_core.handler_input import HandlerInput
+from ask_sdk_model import Response
+from ask_sdk_model.ui import SimpleCard
+```
+
+And create a `LaunchRequestHandler`.
+
+This class is called when the skill is invoked via Alexa.
+
+```
+class LaunchRequestHandler(AbstractRequestHandler):
+    def can_handle(self, handler_input):
+        # type: (HandlerInput) -> bool
+        return is_request_type("LaunchRequest")(handler_input)
+
+    def handle(self, handler_input):
+        # type: (HandlerInput) -> Response
+        speech_text = "Welcome to the Alexa Skills Kit, you can say hello!"
+
+        handler_input.response_builder.speak(speech_text).set_card(
+            SimpleCard("Hello World", speech_text)).set_should_end_session(
+            False)
+        return handler_input.response_builder.response
+```
+
+Cool. Now the `HelloWorldIntentHandler`, which detects a "Hello World Intent" and
+replies with "Hello World". 
+
+What is a HelloWorldIntent? Well, that will depend on the speech-to-intent modelling.
+Later we`ll see more about that.
+
+
+
+```
+
+class HelloWorldIntentHandler(AbstractRequestHandler):
+    def can_handle(self, handler_input):
+        # type: (HandlerInput) -> bool
+        return is_intent_name("HelloWorldIntent")(handler_input)
+
+    def handle(self, handler_input):
+        # type: (HandlerInput) -> Response
+        speech_text = "Hello World"
+
+        handler_input.response_builder.speak(speech_text).set_card(
+            SimpleCard("Hello World", speech_text)).set_should_end_session(
+            True)
+        return handler_input.response_builder.response
+
+```
+
+
+Okay, now let`s handle other user requests.
+
+- Request for help with `HelpIntentHandler`:
+
+```
+class HelpIntentHandler(AbstractRequestHandler):
+    def can_handle(self, handler_input):
+        # type: (HandlerInput) -> bool
+        return is_intent_name("AMAZON.HelpIntent")(handler_input)
+
+    def handle(self, handler_input):
+        # type: (HandlerInput) -> Response
+        speech_text = "You can say hello to me!"
+
+        handler_input.response_builder.speak(speech_text).ask(speech_text).set_card(
+            SimpleCard("Hello World", speech_text))
+        return handler_input.response_builder.response
+```
+
+- Request to cancel command with `CancelAndStopIntentHandler`:
+
+```
+class CancelAndStopIntentHandler(AbstractRequestHandler):
+    def can_handle(self, handler_input):
+        # type: (HandlerInput) -> bool
+        return is_intent_name("AMAZON.CancelIntent")(handler_input)
+                or is_intent_name("AMAZON.StopIntent")(handler_input)
+
+    def handle(self, handler_input):
+        # type: (HandlerInput) -> Response
+        speech_text = "Goodbye!"
+
+        handler_input.response_builder.speak(speech_text).set_card(
+            SimpleCard("Hello World", speech_text)).set_should_end_session(True)
+        return handler_input.response_builder.response
+
+```
+
+- Request to end session command with `SessionEndedRequestHandler`:
+
+```
+class SessionEndedRequestHandler(AbstractRequestHandler):
+    def can_handle(self, handler_input):
+        # type: (HandlerInput) -> bool
+        return is_request_type("SessionEndedRequest")(handler_input)
+
+    def handle(self, handler_input):
+        # type: (HandlerInput) -> Response
+        # any cleanup logic goes here
+
+        return handler_input.response_builder.response
+```
+
+- Catch exceptions with `AllExceptionHandler`:
+
+```
+
+from ask_sdk_core.dispatch_components import AbstractExceptionHandler
+
+class AllExceptionHandler(AbstractExceptionHandler):
+
+    def can_handle(self, handler_input, exception):
+        # type: (HandlerInput, Exception) -> bool
+        return True
+
+    def handle(self, handler_input, exception):
+        # type: (HandlerInput, Exception) -> Response
+        # Log the exception in CloudWatch Logs
+        print(exception)
+
+        speech = "Sorry, I didn't get it. Can you please say it again!!"
+        handler_input.response_builder.speak(speech).ask(speech)
+        return handler_input.response_builder.response
+
+```
+
+To finish for the day, let`s add Lambda handlers, as I'll host the code on AWS Lambda. 
+
+This makes the interface of the Python code with the other bits of the skill
+
+```
+sb.add_request_handler(LaunchRequestHandler())
+sb.add_request_handler(HelloWorldIntentHandler())
+sb.add_request_handler(HelpIntentHandler())
+sb.add_request_handler(CancelAndStopIntentHandler())
+sb.add_request_handler(SessionEndedRequestHandler())
+
+sb.add_exception_handler(AllExceptionHandler())
+
+handler = sb.lambda_handler()
+```
+
+I`ll __skip the Option 2 for now__! After I complete the tutorial, I'll come back to study the different architectures.
+
+Next part: [Preparing your code for AWS Lambda](https://developer.amazon.com/en-US/docs/alexa/alexa-skills-kit-sdk-for-python/develop-your-first-skill.html#preparing-your-code-for-aws-lambda)! 
+
