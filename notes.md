@@ -209,3 +209,45 @@ I`ll __skip the Option 2 for now__! After I complete the tutorial, I'll come bac
 
 Next part: [Preparing your code for AWS Lambda](https://developer.amazon.com/en-US/docs/alexa/alexa-skills-kit-sdk-for-python/develop-your-first-skill.html#preparing-your-code-for-aws-lambda)! 
 
+# 07 October 2020
+
+## Setting Lambda
+
+The tutorial redirects to [a Lambda-specific tutorial](https://developer.amazon.com/en-US/docs/alexa/custom-skills/host-a-custom-skill-as-an-aws-lambda-function.html)
+
+There are many things to set. 
+
+For Python, the tutorial mentions that for Python, you can use a template provided in the AWS Serverless App Repository to create your function. This automatically creates the resources you need for the function to work with Alexa:
+
+ - The Lambda function itself, with starting sample code from the corresponding GitHub repository. You can use this to experiment with the sample functionality, or replace it with your own code.
+- The SDK dependencies. This eliminates the need to upload the dependencies (such as node_modules) yourself.
+- The permissions
+- The role for the function. This defines the AWS resources the function can access.
+
+
+The tutorial then provides a link to a [sample Python skill](alexa-skills-kit-python36-factskill).
+
+- Select a region. There is a South America (Sao Paulo)	region, so I`ll use that
+
+Then I modify in __Application settings__:
+- Application name:  hello-world-skill
+- SkillDescription: Backend logic for the basic hello world skill built using the ASK SDK for Python 3.6.
+- SkillFunctionName: ask-python36-hello
+
+And click on _deploy_.  In this case, you are deploying a function as part of an _application_. 
+
+If you go to the _deployment_ tab you can see  the status of creation, which goes from _Create in progress_ to _Create complete_
+
+In the _Overview_ tab, there is a _Resources_ field. Click on your function and there it is.
+
+### Setting VS Code to use lambda
+
+I can edit there on lambda, but I don`t want it. I want to edit on VS Code. 
+
+Luckly, there is [a tutorial for that](https://docs.aws.amazon.com/toolkit-for-vscode/latest/userguide/welcome.html)
+
+I`ll install the extension and call it a day. 
+
+There is a vscode extension called AWS Toolkit. I just installed it.
+
+I have to [set credentials now](https://docs.aws.amazon.com/toolkit-for-vscode/latest/userguide/establish-credentials.html), but not today. 
