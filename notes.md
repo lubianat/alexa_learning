@@ -251,3 +251,55 @@ I`ll install the extension and call it a day.
 There is a vscode extension called AWS Toolkit. I just installed it.
 
 I have to [set credentials now](https://docs.aws.amazon.com/toolkit-for-vscode/latest/userguide/establish-credentials.html), but not today. 
+
+# 08 October 2020
+
+## Setting credentials
+
+### On AWS
+
+- Create an Identity and Access Management (IAM) User with safe permissions
+
+ - I go to [IAM home](https://console.aws.amazon.com/iam/home) and create user
+
+ - I give the user Programmatic access, which "enables an access key ID and secret access key for the AWS API, CLI, SDK, and other development tools."
+
+ OOps, I need to create a group. 
+ 
+ - I click on "Create Group"
+
+ - I specify the Lambda service with all actions and All resources 
+
+ - I set the request condition for the IP of my computer
+
+ - I click on Review Policy and create the group. 
+
+Now again
+
+ - I go to [IAM home](https://console.aws.amazon.com/iam/home) and create user
+
+ - I give the user Programmatic access, which "enables an access key ID and secret access key for the AWS API, CLI, SDK, and other development tools."
+
+ - I give up on the group and use the policy AWSCodeDeployRoleForLambda
+ 
+ - I skip tags
+
+ Now I have an access keys. Cool. 
+
+### On VS code
+
+- Open the Command Palette, search for AWS and choose AWS: Create Credentials Profile.
+
+- I add the key and the secret
+
+and back to the [tutorial](https://docs.aws.amazon.com/toolkit-for-vscode/latest/userguide/connect.html).
+
+- Command Palette --> AWS: Connect to AWS. and choose a profile.
+
+Now there is an AWS side bar. Nice. 
+
+I add the São Paulo region.
+
+I skip the part on [changing regions](https://docs.aws.amazon.com/toolkit-for-vscode/latest/userguide/setup-region.html)
+
+The next part is [configuring the toolchain](https://docs.aws.amazon.com/toolkit-for-vscode/latest/userguide/setup-toolchain.html), but not today
